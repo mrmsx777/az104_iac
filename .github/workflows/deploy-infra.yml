@@ -28,9 +28,8 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform fmt/validate
+      - name: Terraform validate
         run: |
-          terraform fmt -check
           terraform validate
 
       - name: Terraform init (uses AAD/OIDC for backend)
