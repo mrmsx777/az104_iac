@@ -16,3 +16,20 @@ resource "azuread_user" "az104_user1" {
   job_title           = "IT Admin"
   department          = "IT"
 }
+
+
+resource "azuread_group" "itadmins" {
+  display_name     = "IT Admins Group"
+  mail_nickname    = "itadmins"
+  security_enabled = true
+  description      = "Group for az104 users"
+  members          = [azuread_user.az104_user1.object_id]
+}
+
+
+
+resource "azurerm_role_assignment" "vm_contributor" {
+  scope                = azurerm.virtual_machine.vm.id
+  role_definition_name = "Contributor"
+  principal_id         = azuread_user.az104_user1.object_id
+}
