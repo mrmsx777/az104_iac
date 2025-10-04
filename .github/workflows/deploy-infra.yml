@@ -1,0 +1,45 @@
+name: Terraform Apply (OIDC)
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write   # REQUIRED for OIDC
+  contents: read
+
+env:
+  ARM_USE_OIDC: true
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}      # from your app reg
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+jobs:
+  tf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Establish OIDC trust with Azure (no secrets); populates federated identity
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ env.ARM_CLIENT_ID }}
+          tenant-id: ${{ env.ARM_TENANT_ID }}
+          subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt/validate
+        run: |
+          terraform fmt -check
+          terraform validate
+
+      - name: Terraform init (uses AAD/OIDC for backend)
+        run: terraform init
+
+      - name: Terraform plan
+        run: terraform plan -input=false
+
+      # apply on demand (keep manual for safety)
+      - name: Terraform apply
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform apply -auto-approve -input=false
