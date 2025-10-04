@@ -1,16 +1,10 @@
 locals {
-  # Keep it dead simple for now
-  location = "canadacentral"
-
-  # Basic naming you can reuse later
-  prefix = "lab"
-  env    = "sbx"
-
-  rg_name = "${local.prefix}-rg-${local.env}"
+  rg_name = "lab_project"
 
   tags = {
-    owner = "ayoub"
-    env   = local.env
+    owner = "msx"
+    env   = "dev"
     proj  = "az104"
+    app = "az104_iac"
   }
 }
