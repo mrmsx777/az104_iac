@@ -28,17 +28,15 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Terraform validate
-        run: |
-          terraform validate
+      - name: Terraform init
+        run: terraform init -input=false
 
-      - name: Terraform init (uses AAD/OIDC for backend)
-        run: terraform init
+      - name: Terraform validate
+        run: terraform validate
 
       - name: Terraform plan
         run: terraform plan -input=false
 
-      # apply on demand (keep manual for safety)
       - name: Terraform apply
         if: github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve -input=false
