@@ -46,7 +46,7 @@ variable "disks" {
 
 resource "azurerm_managed_disk" "disks" {
   
-  for_each             = var.disks
+  for_each             = { for k, v in var.disks : k => v if k != "disk1" }
   name                 = each.value.name
   location             = each.value.location
   resource_group_name  = data.azurerm_resource_group.rg.name
