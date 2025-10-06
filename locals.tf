@@ -1,5 +1,6 @@
 locals {
   rg_name = "lab_project"
+  localion  = "Canada East"
 
   tags = {
     owner = "msx"

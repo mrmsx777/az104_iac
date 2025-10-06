@@ -26,3 +26,13 @@ resource "azuread_group" "itadmins" {
   members          = [azuread_user.az104_user1.object_id]
 }
 
+resource "azurerm_managed_disk" "example" {
+  name                 = "test-managed-disk"
+  location             = "East US"
+  resource_group_name  = data.azurerm_resource_group.rg.name
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb        = "32" 
+  performance_tier    = "Standard"
+
+}
