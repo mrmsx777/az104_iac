@@ -1,7 +1,7 @@
-# Handy to confirm which account/subscription is active
+
 data "azurerm_client_config" "current" {}
 
-# Minimal resource to validate auth + backend + plan/apply
+
 data "azurerm_resource_group" "rg" {
   name     = local.rg_name
 }
@@ -88,6 +88,8 @@ variable "vnets" {
   }
 }
 
+
+
 resource "azurerm_virtual_network" "vnets" {
   for_each            = var.vnets
   name                = each.value.name
@@ -104,5 +106,64 @@ resource "azurerm_virtual_network" "vnets" {
   subnet {
     name           = each.value.subnet_name2
     address_prefix = each.value.subnet_prefix2
+  }
+}
+
+
+
+variable "vm1" {
+  type = map(object({
+    name = string
+  }))
+
+  default = {
+    vm1 = { name = "test-win-vm1" }
+    vm2 = { name = "test-win-vm2" }
+  }
+}
+
+
+
+
+data "azurerm_subnet" "shared_services" {
+  name                 = var.vnets.vnet1.subnet_name1                 # "SharedServicesSubnet"
+  virtual_network_name = var.vnets.vnet1.name                         # "CoreServicesVnet"
+  resource_group_name  = data.azurerm_resource_group.rg.name
+}
+
+
+
+resource "azurerm_network_interface" "nic" {
+  for_each            = var.vm1
+  name                = "nic-${each.value.name}"
+  location            = "East US"
+  resource_group_name = data.azurerm_resource_group.rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = data.azurerm_subnet.shared_services.id  #links to SharedServicesSubnet
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+
+resource "azurerm_windows_virtual_machine" "vm1" {
+  for_each            = var.vm1
+  name                = each.value.name
+  location            = "East US"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  network_interface_ids = [azurerm_network_interface.nic[each.key].id] 
+  size                = "Standard_B1s"
+  admin_username      = "azureuser"
+  admin_password      = "Pass@word1234"
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+  source_image_reference {
+    publisher = "MicrosoftWindowsServer"
+    offer     = "WindowsServer"
+    sku       = "2019-Datacenter-smalldisk"
+    version   = "latest"
   }
 }
