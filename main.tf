@@ -35,11 +35,11 @@ variable "disks" {
   default = {
     disk1 = {
       name                 = "test-managed-disk"
-      location             = "East US"
+  location             = "canadacentral"
     },
     disk2 = {
       name                 = "test-managed-disk-2"
-      location             = "East US"
+  location             = "canadacentral"
   }
 }
 }
@@ -93,7 +93,7 @@ variable "vnets" {
 resource "azurerm_virtual_network" "vnets" {
   for_each            = var.vnets
   name                = each.value.name
-  location            = "East US"
+  location            = "canadacentral"
   resource_group_name = data.azurerm_resource_group.rg.name
   address_space       = each.value.address_space  
 
@@ -134,7 +134,7 @@ variable "vm1" {
 resource "azurerm_network_interface" "nic" {
   for_each            = var.vm1
   name                = "nic-${each.value.name}"
-  location            = "East US"
+  location            = "canadacentral"
   resource_group_name = data.azurerm_resource_group.rg.name
 
   ip_configuration {
