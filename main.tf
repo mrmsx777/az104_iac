@@ -148,7 +148,7 @@ resource "azurerm_network_interface" "nic" {
 resource "azurerm_windows_virtual_machine" "vm1" {
   for_each            = var.vm1
   name                = each.value.name
-  location            = "canadaeast" # updated from East US to canadaeast
+  location            = "canadacentral" # updated from East US to canadaeast
   resource_group_name = data.azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic[each.key].id] 
   size                = "Standard_D2s_v3" # updated from B2s to D2s_v3
