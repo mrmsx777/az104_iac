@@ -125,11 +125,9 @@ variable "vm1" {
 
 
 
-data "azurerm_subnet" "shared_services" {
-  name                 = var.vnets.vnet1.subnet_name1                 # "SharedServicesSubnet"
-  virtual_network_name = var.vnets.vnet1.name                         # "CoreServicesVnet"
-  resource_group_name  = data.azurerm_resource_group.rg.name
-}
+// The subnet is created inline inside the azurerm_virtual_network "vnets" resource
+// so we don't need to look it up with a data block. We'll reference the
+// created subnet through the virtual network resource below.
 
 
 
@@ -141,7 +139,7 @@ resource "azurerm_network_interface" "nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = data.azurerm_subnet.shared_services.id  #links to SharedServicesSubnet
+    subnet_id                     = azurerm_virtual_network.vnets["vnet1"].subnet[0].id  # links to SharedServicesSubnet created above
     private_ip_address_allocation = "Dynamic"
   }
 }
