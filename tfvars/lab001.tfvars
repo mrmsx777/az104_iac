@@ -1,6 +1,6 @@
 #define user variable here that will suply main.tf file
 location = "canadacentral"
-rg_name  = "lab_project"
+rg_name  = "rg-az104"
 tags = {
   owner = "msx"
   env   = "dev"

@@ -1,6 +1,6 @@
 locals {
-  rg_name = "lab_project"
-  localion  = "Canada East"
+  rg_name = "rg-az104"
+  localion  = "eastus"
 
   tags = {
     owner = "msx"
