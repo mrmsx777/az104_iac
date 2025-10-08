@@ -9,7 +9,7 @@ data "azurerm_resource_group" "rg" {
 
 
 resource "azuread_user" "az104_user1" {
-  user_principal_name = "az104-user1@elattariayoub1gmail.onmicrosoft.com"
+  user_principal_name = "az104-user1@xxjaximusxxgmail.onmicrosoft.com"
   display_name        = "az104-user1"
   password            = "pass@word1"
   account_enabled     = true
@@ -151,7 +151,7 @@ resource "azurerm_windows_virtual_machine" "vm1" {
   location            = "East US"
   resource_group_name = data.azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic[each.key].id] 
-  size                = "Standard_B1s"
+  size                = "Standard_B2s"
   admin_username      = "azureuser"
   admin_password      = "Pass@word1234"
   os_disk {
