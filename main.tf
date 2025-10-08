@@ -139,7 +139,7 @@ resource "azurerm_network_interface" "nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_virtual_network.vnets["vnet1"].subnet[0].id  # links to SharedServicesSubnet created above
+    subnet_id = [for s in azurerm_virtual_network.vnets["vnet1"].subnet : s.id if s.name == var.vnets.vnet1.subnet_name1][0]  # id of SharedServicesSubnet created above
     private_ip_address_allocation = "Dynamic"
   }
 }
